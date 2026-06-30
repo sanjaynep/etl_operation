@@ -17,7 +17,5 @@ def extract_data():
     df = pd.read_parquet(path)
     print(df.shape)
     print(df.isnull().sum())
-    return df.head(5)
+    return df
 
-result = extract_data()
-print(result)
