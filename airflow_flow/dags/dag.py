@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
+from airflow.decorators import task
 from airflow_flow.etl_works.extract import extract_data
 from airflow_flow.etl_works.transform import transform_data
 from airflow_flow.etl_works.load import load_data
@@ -19,22 +20,16 @@ with DAG(
     catchup=False,
     ) as dag:
 
-    extract = PythonOperator(
-        task_id='extract',
-        python_callable=extract_data,
-        provide_context=True
-    )
+    @task
+    def extract_task():
+        return extract_data()
 
-    transform = PythonOperator(
-        task_id='transform',
-        python_callable=transform_data,
-        provide_context=True
-    )
+    @task
+    def transform_task(df):
+        return transform_data(df)
 
-    load = PythonOperator(
-        task_id='load',
-        python_callable=load_data,
-        provide_context=True
-    )
+    @task
+    def load_task(df):
+        load_data(df)
 
-    extract>>transform>>load
+    load_task(transform_task(extract_task()))
