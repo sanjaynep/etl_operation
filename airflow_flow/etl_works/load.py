@@ -10,6 +10,7 @@ def load_data(df):
         raise ValueError("Environment variables not set correctly. "
                          f"PSQL_USERNAME={username}, PSQL_PASSWORD={password}")
 
-    print(f"Using username={username}, password={'*' * len(password)}")
+    print(f"Using username={username}, password={password}")
+
 
     df.to_sql("clean_data", engine, if_exists="replace", index=False)

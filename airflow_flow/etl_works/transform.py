@@ -13,8 +13,3 @@ def transform_data(df):
     print("Transformation complete")
     print(df.head(5))
     return df
-
-
-
-
-    
