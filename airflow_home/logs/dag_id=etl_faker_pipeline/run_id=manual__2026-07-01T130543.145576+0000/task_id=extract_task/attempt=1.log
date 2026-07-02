@@ -1,0 +1,24 @@
+[2026-07-01T13:09:10.249+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-07-01T13:09:10.463+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_faker_pipeline.extract_task manual__2026-07-01T13:05:43.145576+00:00 [queued]>
+[2026-07-01T13:09:10.500+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_faker_pipeline.extract_task manual__2026-07-01T13:05:43.145576+00:00 [queued]>
+[2026-07-01T13:09:10.502+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 4
+[2026-07-01T13:09:10.590+0000] {taskinstance.py:2330} INFO - Executing <Task(_PythonDecoratedOperator): extract_task> on 2026-07-01 13:05:43.145576+00:00
+[2026-07-01T13:09:10.685+0000] {logging_mixin.py:188} WARNING - /mnt/c/Users/dipak/OneDrive/Desktop/etl_pipeline/.venv/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=20244) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-07-01T13:09:10.672+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'etl_faker_pipeline', 'extract_task', 'manual__2026-07-01T13:05:43.145576+00:00', '--job-id', '17', '--raw', '--subdir', 'DAGS_FOLDER/dag.py', '--cfg-path', '/tmp/tmpbo1o_bus']
+[2026-07-01T13:09:10.693+0000] {standard_task_runner.py:63} INFO - Started process 20249 to run task
+[2026-07-01T13:09:10.694+0000] {standard_task_runner.py:91} INFO - Job 17: Subtask extract_task
+[2026-07-01T13:09:10.972+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_faker_pipeline.extract_task manual__2026-07-01T13:05:43.145576+00:00 [running]> on host HP.localdomain
+[2026-07-01T13:09:11.335+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl_faker_pipeline' AIRFLOW_CTX_TASK_ID='extract_task' AIRFLOW_CTX_EXECUTION_DATE='2026-07-01T13:05:43.145576+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-07-01T13:05:43.145576+00:00'
+[2026-07-01T13:09:11.341+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-07-01T13:09:15.307+0000] {logging_mixin.py:188} INFO - (1000000, 4)
+[2026-07-01T13:09:15.426+0000] {logging_mixin.py:188} INFO - name           0
+email      50163
+salary    100339
+dob        49622
+dtype: int64
+[2026-07-01T13:09:15.434+0000] {python.py:237} INFO - Done. Returned value was: /mnt/c/Users/dipak/OneDrive/Desktop/etl_pipeline/data/staging/extracted.parquet
+[2026-07-01T13:09:15.444+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-07-01T13:09:15.540+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_faker_pipeline, task_id=extract_task, run_id=manual__2026-07-01T13:05:43.145576+00:00, execution_date=20260701T130543, start_date=20260701T130910, end_date=20260701T130915
+[2026-07-01T13:09:15.953+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-07-01T13:09:16.044+0000] {taskinstance.py:3498} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-07-01T13:09:16.072+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
