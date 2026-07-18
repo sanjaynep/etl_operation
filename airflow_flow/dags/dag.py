@@ -9,7 +9,7 @@ from airflow_flow.etl_works.load import load_data
 default_args = {
     'owner': 'airflow',
     'start_date': datetime(2024, 1, 1),
-    'retries': 3,
+    'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
 with DAG(

@@ -14,10 +14,13 @@ PYTHON_VERSION=3.12
 CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
 
 python -m pip install "apache-airflow[postgres]==${AIRFLOW_VERSION}" --constraint "$CONSTRAINT_URL"
+python -m pip install psutil
 
 export AIRFLOW_HOME="$PROJECT_ROOT/airflow_home"
 export AIRFLOW__CORE__DAGS_FOLDER="$PROJECT_ROOT/airflow_flow/dags"
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
+export AIRFLOW__LOGGING__BASE_LOG_FOLDER="$AIRFLOW_HOME/logs"
+export AIRFLOW__LOGGING__REMOTE_LOGGING=False
 export PYTHONPATH="$PROJECT_ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
 airflow db migrate
