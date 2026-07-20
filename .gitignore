@@ -3,3 +3,6 @@ __pycache__
 .venv
 airflow_home/airflow.db
 airflow_home/logs
+.env
+*.pkl
+*.joblib

@@ -44,7 +44,12 @@ class LogHandler(FileSystemEventHandler):
     def _process_file(self, filepath):
         new_lines = self._read_new_lines(filepath)
         if new_lines:
-            preprocess_log_lines(new_lines, filepath)
+            results = preprocess_log_lines(new_lines, filepath)
+            for anomaly, stripped_line in results:
+                stripped_line = str(stripped_line)
+                if anomaly == 1:  # anomaly detected
+                    llm_output = response(stripped_line)
+                    alert_developer(stripped_line, llm_output["content"], "developer@example.com")
 
     def on_created(self, event):
         if self._is_log_file(event):
@@ -58,7 +63,7 @@ class LogHandler(FileSystemEventHandler):
             self._process_file(event.src_path)
 
 if __name__ == "__main__":
-    path = os.path.expanduser("~/airflow_home/logs") 
+    path = os.path.expanduser("~/etl_pipeline/airflow_home/logs") 
     event_handler = LogHandler()
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
