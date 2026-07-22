@@ -5,7 +5,7 @@ import re
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
-
+import random
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -392,30 +392,79 @@ def score_log_line(line: str, source_path: str = "", model=None) -> int:
     prediction = model.predict(feature_frame)[0]
     return int(prediction)
 
+def preprocess_log_lines(lines: list[str], filepath: str = "") -> tuple[list[tuple[int, str]], str]:
+    results: list[tuple[int, str]] = []
+    anomaly_lines: list[str] = []
 
-def preprocess_log_lines(lines: list[str], filepath: str = "") -> list[int | None]:
-    results: list[int | None] = []
     try:
         model = load_model()
     except Exception as exc:
         print(f"Error loading anomaly model from {MODEL_PATH}: {exc}")
-        return []
+        return [], ""
 
     for line in lines:
         stripped_line = line.strip()
+
         if not stripped_line:
             continue
 
         try:
             feature_frame = _build_feature_frame([stripped_line], filepath, model)
             anomaly = int(model.predict(feature_frame)[0])
-            results.append(anomaly)
-            print(f"{anomaly} | {stripped_line}")
+
+            results.append((anomaly, stripped_line))
+
+            if anomaly == 1:
+                anomaly_lines.append(stripped_line)
+
+            print(f"Anomaly={anomaly} | {stripped_line}")
+
         except Exception as exc:
             print(f"Error processing line in {filepath}: {exc}")
-            results.append(None)
-    return results
 
+    aggregated_anomalies = "\n".join(anomaly_lines)
+
+    return results, aggregated_anomalies
+
+
+# for testing
+# def preprocess_log_lines(lines: list[str], filepath: str = "") -> tuple[list[tuple[int, str]], str]:
+#     results: list[tuple[int, str]] = []
+#     anomaly_lines: list[str] = []
+
+#     try:
+#         model = load_model()
+#     except Exception as exc:
+#         print(f"Error loading anomaly model from {MODEL_PATH}: {exc}")
+#         return [], ""
+
+#     # Remove empty lines first
+#     valid_lines = [line.strip() for line in lines if line.strip()]
+
+#     # Pick one random line index for testing
+#     random_index = random.randint(0, len(valid_lines) - 1) if valid_lines else -1
+
+#     for idx, stripped_line in enumerate(valid_lines):
+#         try:
+#             feature_frame = _build_feature_frame([stripped_line], filepath, model)
+#             anomaly = int(model.predict(feature_frame)[0])
+
+#             # Force one random line to be anomaly for testing
+#             if idx == random_index:
+#                 anomaly = 1
+
+#             results.append((anomaly, stripped_line))
+
+#             if anomaly == 1:
+#                 anomaly_lines.append(stripped_line)
+
+#             print(f"Anomaly={anomaly} | {stripped_line}")
+
+#         except Exception as exc:
+#             print(f"Error processing line in {filepath}: {exc}")
+
+#     aggregated_anomalies = "\n".join(anomaly_lines)
+#     return results, aggregated_anomalies
 
 def preprocess_log(filepath):
     try:

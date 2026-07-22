@@ -23,9 +23,6 @@ def extract_data():
     "log_level": "INFO",
     "last_message": f"extracted rows={len(df)}",
 }
-    print(json.dumps(metrics))
     STAGING_DIR.mkdir(parents=True, exist_ok=True)
     df.to_parquet(EXTRACTED_FILE, index=False)
-    print(df.shape)
-    print(df.isnull().sum())
     return str(EXTRACTED_FILE)

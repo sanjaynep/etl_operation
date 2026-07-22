@@ -3,6 +3,11 @@ import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from feature import preprocess_log_lines
+from response import Response,alert_developer
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class LogHandler(FileSystemEventHandler):
     def __init__(self):
@@ -43,13 +48,37 @@ class LogHandler(FileSystemEventHandler):
 
     def _process_file(self, filepath):
         new_lines = self._read_new_lines(filepath)
-        if new_lines:
-            results = preprocess_log_lines(new_lines, filepath)
-            for anomaly, stripped_line in results:
-                stripped_line = str(stripped_line)
-                if anomaly == 1:  # anomaly detected
-                    llm_output = response(stripped_line)
-                    alert_developer(stripped_line, llm_output["content"], "developer@example.com")
+
+        if not new_lines:
+            return
+
+        # Get prediction for each line + aggregated anomaly text
+        results, aggregated_anomalies = preprocess_log_lines(new_lines, filepath)
+
+        # Print result for every line
+        for anomaly, stripped_line in results:
+            print(f"Anomaly={anomaly}, Line={stripped_line}")
+
+        # Send to LLM only if at least one anomaly exists
+        if aggregated_anomalies:
+            print("\nSending aggregated anomalies to LLM...\n")
+
+            try:
+                # Call LLM once with all anomaly lines
+                llm_output = Response(aggregated_anomalies)
+                llm_content = llm_output["content"]
+            except Exception as exc:
+                print(f"LLM generation failed: {exc}")
+                llm_content = "LLM suggestion could not be generated. Check model availability, GPU/CPU memory, and HF access."
+
+            # Send one alert to developer
+            alert_developer(
+                aggregated_anomalies,
+                llm_content,
+                os.getenv("ALERT_EMAIL_TO", os.environ["ALERT_EMAIL_FROM"])
+            )
+
+    
 
     def on_created(self, event):
         if self._is_log_file(event):

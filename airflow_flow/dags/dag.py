@@ -5,6 +5,7 @@ from airflow.decorators import task
 from airflow_flow.etl_works.extract import extract_data
 from airflow_flow.etl_works.transform import transform_data
 from airflow_flow.etl_works.load import load_data
+import threading
 
 
 default_args = {
@@ -13,6 +14,12 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
+
+def mild_cpu_load(duration=5):
+    import time, math
+    end = time.time() + duration
+    while time.time() < end:
+        math.sqrt(123456)  # lightweight loop
 
 def log_system_usage(**context):
     cpu = psutil.cpu_percent(interval=1)
@@ -40,7 +47,11 @@ with DAG(
 
     @task
     def load_task(input_path):
+        t = threading.Thread(target=mild_cpu_load, args=(5,))
+        t.start()
         log_system_usage()
         load_data(input_path)
+        t.join()
+        
 
     load_task(transform_task(extract_task()))
