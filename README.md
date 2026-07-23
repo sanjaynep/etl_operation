@@ -4,10 +4,10 @@ An Apache Airflow-orchestrated ETL pipeline that extracts data from Parquet file
 
 ## Overview
 
-This project implements a simple, three-stage ETL workflow managed by Apache Airflow:
+This project implements a simple, three-stage ETL workflow managed by Apache Airflow Where logs are collected and preprocessed each line so that it will be fitted in model for anomaly detection and then if anomaly detecte it will provide alert message of problem and suggestion through email:
 
 ```
-extract_task → transform_task → load_task
+extract_task → transform_task → load_task → logs collection → anomAaly detection → llm suggestion 
 ```
 
 - **Extract** — Reads source data from a Parquet file.
@@ -35,6 +35,7 @@ etl_operation/
 - **PostgreSQL** — data warehouse / load target
 - **Shell scripting** — environment setup and automation
 - **WSL** — development environment
+- **Qwen** - suggestion llm
 
 ## Prerequisites
 
@@ -65,7 +66,8 @@ etl_operation/
 
 4. **Set the Airflow home directory**
    ```bash
-   export AIRFLOW_HOME=$(pwd)/airflow_home
+   . scripts/airflow-env.sh
+   . scripts/airflow-setip.sh
    ```
 
 5. **Configure PostgreSQL credentials**
@@ -75,6 +77,7 @@ etl_operation/
    export PSQL_USERNAME=your_postgres_username
    export PSQL_PASSWORD=your_postgres_password
    ```
+   better through UI wich is admin>onnections>addconnection
 
 6. **Create the target database** (if it doesn't already exist)
    ```bash
@@ -86,6 +89,7 @@ etl_operation/
    ```bash
    airflow scheduler
    airflow webserver -p 8081
+   python3 simulation_pipe/watch_dog.py
    ```
 4. Open the Airflow UI ( `http://localhost:8081`) and locate the ETL DAG.
 5. Unpause and trigger the DAG to run `extract_task → transform_task → load_task` in sequence.
