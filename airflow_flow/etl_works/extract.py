@@ -1,14 +1,3 @@
-
-# from pyspark.sql import SparkSession
-
-# spark = SparkSession.builder.appName("FakerETL").getOrCreate()
-
-
-# def extract_data():
-#     df = spark.read.csv("fake_data.csv", header=True, inferSchema=True)
-#     df.display()
-
- # for pyspark java is needed
 from pathlib import Path
 
 import pandas as pd
@@ -34,10 +23,6 @@ def extract_data():
     "log_level": "INFO",
     "last_message": f"extracted rows={len(df)}",
 }
-    print(json.dumps(metrics))
     STAGING_DIR.mkdir(parents=True, exist_ok=True)
     df.to_parquet(EXTRACTED_FILE, index=False)
-    print(df.shape)
-    print(df.isnull().sum())
     return str(EXTRACTED_FILE)
-
